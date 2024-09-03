@@ -331,7 +331,6 @@ dados1 <- mutate(dados1, indice_saturados_aromaticos = dados$saturados / dados$a
 
 ---
 
-Para análises individuais
 
 
 

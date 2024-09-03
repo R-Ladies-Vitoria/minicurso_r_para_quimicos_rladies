@@ -410,33 +410,70 @@ Nesse casos, iremos discretizar o ponto de fluidez
 ``` r
 
 dados1$ponto_fluidez_categoria &lt;- cut(
-  dados$ponto_de_fluidez,
+  dados1$ponto_de_fluidez,
   breaks = c(-Inf, 0, 10, Inf),  # Definindo os limites das categorias
   labels = c("Baixo", "Médio", "Alto"),
   right = TRUE  # Inclui o valor de limite superior na categoria
 )
-  #&gt; Error in `$&lt;-`:
-  #&gt; ! Assigned data `cut(...)` must be compatible with existing data.
-  #&gt; ✖ Existing data has 70 rows.
-  #&gt; ✖ Assigned data has 72 rows.
-  #&gt; ℹ Only vectors of size 1 are recycled.
-  #&gt; Caused by error in `vectbl_recycle_rhs_rows()`:
-  #&gt; ! Can't recycle input of size 72 to size 70.
-```
-
-``` r
 
 tabyl(dados1, ponto_fluidez_categoria)
-  #&gt; Error in `dplyr::select()`:
-  #&gt; ! Can't select columns that don't exist.
-  #&gt; ✖ Column `ponto_fluidez_categoria` doesn't exist.
+  #&gt;  ponto_fluidez_categoria  n   percent
+  #&gt;                    Baixo 49 0.7000000
+  #&gt;                    Médio 11 0.1571429
+  #&gt;                     Alto 10 0.1428571
 ```
+---
 
 No R tem um pacote só para manipular fatores: o **forcats** (for categorial variables). 
 
 Primeiro, precisamos informar o R que a variável é fator com níveis, com o comando as.factor(.).
 
+
+``` r
+
+dados1$ponto_fluidez_categoria &lt;- fct_recode(dados1$ponto_fluidez_categoria,
+                                            "Baixo" = "Baixo",
+                                            "Médio" = "Médio",
+                                            "Alto" = "Alto")
+fct_count(dados1$ponto_de_fluidez_categoria)
+  #&gt; Error in `fct_count()`:
+  #&gt; ! `f` must be a factor or character vector, not NULL.
+```
 ---
+
+class: middle
+
+##Exercício
+
+O TAN (Número de Acidez Total) é uma medida da acidez de um petróleo ou produto petroquímico, a interpretação dos níveis de acidez pode variar dependendo do tipo de petróleo. Discretize essa variável com base no seguinte critério:
+- Baixo TAN: 0 - 0.5 mg KOH/g
+- Médio TAN: 0.5 - 1.0 mg KOH/g
+- Alto TAN: Acima de 1.0 mg KOH/g
+
+---
+class: middle
+
+### Transformação de variáveis quantitativas
+
+É possível criar novas variáveis quantitativas a partir de outras variáveis. A criação de novas variáveis pode ajudar a capturar relações complexas entre os dados e fornecer insights adicionais. 
+Uma nova variável que pode ser criada é a razão entre saturados e aromáticos, que pode fornecer informações sobre a composição do petróleo.
+
+
+``` r
+dados1 &lt;- mutate(dados1, indice_saturados_aromaticos = dados$saturados / dados$aromaticos)
+  #&gt; Error in `mutate()`:
+  #&gt; ℹ In argument: `indice_saturados_aromaticos =
+  #&gt;   dados$saturados/dados$aromaticos`.
+  #&gt; Caused by error:
+  #&gt; ! `indice_saturados_aromaticos` must be size 70 or 1, not 72.
+```
+
+---
+
+
+
+
+
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
