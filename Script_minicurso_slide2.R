@@ -3,7 +3,7 @@
 ## Importando a base de dados
 
 library(readxl)
-dados <- read_excel(path = "petro.xls",na="NA", sheet = "Refino")
+dados <- read_excel(path = "database/petro.xls",na="NA", sheet = "Refino")
 dados
 
 
@@ -27,8 +27,30 @@ names(dados)
 
 ### Identificação de casos duplicados
 
-get_dupes(dados, id)
+get_dupes(dados, amostra)
 
 library(dplyr)
-dados1 <-  distinct(dados,id, .keep_all = TRUE)
+dados1 <-  distinct(dados,amostra, .keep_all = TRUE)
 dados1
+
+### Identificar tipo e classe de todas as variáveis da base
+
+str(dados1)
+
+## converter a variável para data reduzida
+dados1$data  <- as.Date(dados1$data)
+str(dados1)
+
+# Para variáveis qualitativas: tabela de frequências da variável campo.
+#do pacote janitor
+tabyl(dados1,campo)
+
+
+# Para lidar com variáveis de texto, vamos utilizar o pacote stringr.
+library(stringr)
+dados1$campo <- str_to_lower(dados1$campo)
+tabyl(dados1,campo)
+
+
+
+

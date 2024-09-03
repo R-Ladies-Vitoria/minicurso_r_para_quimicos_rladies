@@ -139,8 +139,200 @@ Consideramos como exemplo os dados fictícios de $n=30$ gestações gemelares. V
 Para importar a base de dados: 
 ```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
 library(readxl)
-dados <- read_excel(path = "database\petro.xls",na="NA", sheet = "Refino") # Selecionando a aba
+dados <- read_excel(path = "database/petro.xls",na="NA", sheet = "Refino") # Selecionando a aba
 dados
 ```
+
+---
+class: middle
+
+##Exercício
+
+Na base em excel, retire os NA's, deixando em branco, e rode o seguinte comando:
+
+```{r, eval=FALSE,include=TRUE,echo=TRUE,error=TRUE}
+library(readxl)
+dados <- read_excel(path = "database/petro.xls", na="NA", sheet = "Refino")
+```
+O default do missing é o espaço em branco. Acesse o help em ?read_excel e veja na = "".  
+
+---
+
+### Nome das variáveis
+
+Utilizaremos as funções tidyverse e janitor para a arrumação da base de dados. 
+
+
+```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE,message=FALSE}
+library(tidyverse)
+library(janitor)
+
+names(dados)
+dados <- clean_names(dados) # a função clean_names() para primeiro ajuste dos nomes das variaveis
+names(dados)
+```
+
+---
+class: middle
+
+### Linhas e colunas vazias 
+ Na base de dados em questão, não há linhas vazias, como pode ser visto na saída abaixo. 
+
+```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
+dados <- remove_empty(dados,"rows")
+```
+
+Propositalmente, inclui a coluna "oi" vazia para podermos eliminá-la com o comando abaixo: 
+```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
+dados <- remove_empty(dados,"cols")
+names(dados)
+```
+
+---
+class: middle
+
+### Identificação de casos duplicados
+
+<!-- Uma boa prática consiste em identificar casos duplicados, isto é, identificar se há casos erroneamente repetidos. No exemplo, a variável chave é id, em que cada indivíduo distinto apresenta um id distinto.  Para identificar casos duplicados pela variável chave "id", usamos a função get_dupes do pacote janitor.  -->
+
+```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
+get_dupes(dados, amostra)
+```
+<!-- No exemplo, note que os IDs=2, 11, 17 e 23 aparecem dois casos cada, o que não está correto para essa aplicação.  -->
+<!-- Para eliminar linhas duplicadas identificadas, usamos a função distinct do pacote dplyr. No objeto dados1 salvamos os dados sem os casos duplicados.  -->
+
+---
+class: middle
+
+```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE,message=FALSE}
+library(dplyr)
+dados1 <-  distinct(dados,amostra, .keep_all = TRUE)
+dados1
+```
+<!-- Ao chamar os dados1,  apenas as dez primeiras linhas são impressas na tela e as colunas que não couberem na largura do console serão omitidas. Vale ressaltar que também são apresentadas a dimensão da tabela (no exemplo, 30X12) e as classes de cada coluna. -->
+
+---
+class: middle
+
+
+### Identificar tipo e classe de todas as variáveis da base
+Para identificar a classe de todas as variáveis que o R está interpretando, usamos a função str(.).  
+
+```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
+# Ver a estrutura dos dados
+str(dados1)
+```
+
+---
+class: middle
+
+```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
+dados1$data  <- as.Date(dados1$data)
+str(dados1)
+```
+
+---
+
+class: middle
+
+
+### Identificar tipo e classe de todas as variáveis da base
+
+Utilizamos a função as.Date(.) porque queríamos mudar para tipo data. Abaixo está a lista das funções para mudança de tipo.
+
+* **as.character** -  converte para variável texto.
+
+* **as.numeric** - converte para variável número.
+
+* **as.factor** - converte para variável categórica.
+
+* **as.integer** - converte para variável inteiro.
+
+* **as.Date** - converte para variável data.
+
+* **as.POSIXct** - converte para variável data e hora completa. 
+
+---
+
+class:  middle
+
+### Identificar erros
+Para variáveis qualitativas: tabela de frequências da variável campo. 
+
+```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
+#do pacote janitor
+tabyl(dados1,campo) 
+```
+
+Para lidar com variáveis de texto, vamos utilizar a função str_to_lower do pacote stringr.
+
+```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
+
+library(stringr)
+dados1$campo <- str_to_lower(dados1$campo)
+tabyl(dados1,campo)
+```
+
+---
+
+class: middle
+
+### Discretizar dados
+Dependendo da natureza dos dados e das análises que vão ser realizadas, é necessário discretizar(categorizar) os dados.
+Nesse casos, iremos discretizar o ponto de fluidez
+
+```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
+
+dados1$ponto_fluidez_categoria <- cut(
+  dados1$ponto_de_fluidez,
+  breaks = c(-Inf, 0, 10, Inf),  # Definindo os limites das categorias
+  labels = c("Baixo", "Médio", "Alto"),
+  right = TRUE  # Inclui o valor de limite superior na categoria
+)
+
+tabyl(dados1, ponto_fluidez_categoria)
+```
+---
+
+No R tem um pacote só para manipular fatores: o **forcats** (for categorial variables). 
+
+Primeiro, precisamos informar o R que a variável é fator com níveis, com o comando as.factor(.).
+
+```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
+
+dados1$ponto_fluidez_categoria <- fct_recode(dados1$ponto_fluidez_categoria,
+                                            "Baixo" = "Baixo",
+                                            "Médio" = "Médio",
+                                            "Alto" = "Alto")
+fct_count(dados1$ponto_de_fluidez_categoria)
+```
+---
+
+class: middle
+
+##Exercício
+
+O TAN (Número de Acidez Total) é uma medida da acidez de um petróleo ou produto petroquímico, a interpretação dos níveis de acidez pode variar dependendo do tipo de petróleo. Discretize essa variável com base no seguinte critério:
+- Baixo TAN: 0 - 0.5 mg KOH/g
+- Médio TAN: 0.5 - 1.0 mg KOH/g
+- Alto TAN: Acima de 1.0 mg KOH/g
+
+---
+class: middle
+
+### Transformação de variáveis quantitativas
+
+É possível criar novas variáveis quantitativas a partir de outras variáveis. A criação de novas variáveis pode ajudar a capturar relações complexas entre os dados e fornecer insights adicionais. 
+Uma nova variável que pode ser criada é a razão entre saturados e aromáticos, que pode fornecer informações sobre a composição do petróleo.
+
+```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
+dados1 <- mutate(dados1, indice_saturados_aromaticos = dados$saturados / dados$aromaticos)
+```
+
+---
+
+Para análises individuais
+
+
 
 
