@@ -4,7 +4,7 @@
 
 library(readxl)
 dados <- read_excel(path = "database/petro.xls",na="NA", sheet = "Refino")
-dados
+View(dados)
 
 
 ### Nome das variáveis

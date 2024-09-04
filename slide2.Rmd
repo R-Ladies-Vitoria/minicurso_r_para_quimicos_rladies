@@ -49,8 +49,6 @@ library(knitr)
 
 - Tratamento de dados
 
-- Medidas descritivas
-
 - Exercicios
 
 ---
@@ -134,7 +132,7 @@ A análise de consistência consiste em realizar uma primeira análise dos dados
 * identificar casos missings e avaliar se a observação está ausente de maneira correta ou não;
 * identificar as categorias de variáveis qualitativas.
 
-Consideramos como exemplo os dados fictícios de $n=30$ gestações gemelares. Vamos considerar duas bases de dados. Na primeira, chamada de "Base_CTG_caracterizacao" estão contidas as informações de caracterização das gestantes e gestações. 
+Consideramos como exemplo os dados fictícios de $n=70$ amostras de petróleo de quatro campos produtores diferentes. Nessa base de dados estão contidas as informações de medição de 10 propriedades fisio-químicas de cada amostra. 
 
 Para importar a base de dados: 
 ```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
@@ -160,7 +158,7 @@ O default do missing é o espaço em branco. Acesse o help em ?read_excel e veja
 
 ### Nome das variáveis
 
-Utilizaremos as funções tidyverse e janitor para a arrumação da base de dados. 
+Utilizaremos as funções tidyverse e janitor para a organização da base de dados. 
 
 
 ```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE,message=FALSE}
@@ -182,7 +180,7 @@ class: middle
 dados <- remove_empty(dados,"rows")
 ```
 
-Propositalmente, inclui a coluna "oi" vazia para podermos eliminá-la com o comando abaixo: 
+Propositalmente, incluimos a coluna "oi" vazia para podermos eliminá-la com o comando abaixo: 
 ```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
 dados <- remove_empty(dados,"cols")
 names(dados)
@@ -317,9 +315,9 @@ tabyl(dados1, ponto_de_fluidez_categoria)
 ---
 ### Discretizar dados
 
-No R tem um pacote só para manipular fatores: o **forcats** (for categorial variables). 
+No R, há um pacote só para manipular fatores: o **forcats** (for categorial variables). 
 
-Primeiro, precisamos informar o R que a variável é fator com níveis, com o comando as.factor(.).
+Primeiro, precisamos informar ao R que a variável é fator com níveis, com o comando as.factor().
 
 ```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
 library(forcats)
@@ -347,7 +345,7 @@ class: middle
 ### Diferença de datas
 Vamos calcular o tempo de duração da coleta da amostra (data inicio menos a data final). Para realizar operações com data, usaremos o pacote **lubridate**. 
 
-A data está salva no formato ano-mês-dia e por isso usamos a função ymd(.) para as variáveis de data. Para calcular a diferença entre as data, usamos a função $%--%$, atribuindo ao objeto intervalo.
+A data está salva no formato ano-mês-dia e por isso usamos a função ymd(.) para as variáveis de data. Para calcular a diferença entre as data, usamos a função $\%--\%$, atribuindo ao objeto intervalo.
 ```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
 library(lubridate)
 intervalo <- ymd(dados1$data_inicio) %--%  ymd(dados1$data_fim)
@@ -364,7 +362,7 @@ class: middle
 
 ### Filtrando banco de dados
 
-Uma etapa muitas vezes necessárias no tratamento de dados é filtrar os dados com base em alguma condição.
+Uma etapa muitas vezes necessária no tratamento de dados é filtrar os dados com base em alguma condição.
 
 ```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
 library(dplyr)
@@ -378,7 +376,7 @@ class: middle
 
 ### Exercício: 
 
-Filtre do banco de dados apenas as linhas que tiver ponto de fluidez baixo e forem do campo Baleia Azul.
+Filtre do banco de dados apenas as linhas que tiverem ponto de fluidez baixo e forem do campo Baleia Azul.
 
 
 **Dica:** Considere o "&" como operador lógico.
@@ -413,11 +411,14 @@ Para essa tarefa, há o pacote **dplyr** com diferentes tipos de junções (join
 
 * inner_join () - retorna valores de ambas as tabelas somente onde há uma correspondência.
 
-* left_join () - retorna todos os valores da primeira tabela mencionada, mais os da segunda tabela correspondente.
-
-* semi_join () - filtra a primeira tabela mencionada para incluir apenas os valores que possuem correspondências na segunda tabela.
+* full_join () - retorna todos os valores de ambas as tabelas.
 
 * anti_join () - filtra a primeira tabela mencionada para incluir apenas valores que não possuem correspondências na segunda tabela.
+
+* left_join () - retorna todos os valores da primeira tabela mencionada, mais os da segunda tabela correspondente.
+
+* right_join () - retorna todos os valores da segundaa tabela mencionada, mais os da peimeira tabela correspondente.
+
 
 ---
 class: middle
@@ -432,10 +433,10 @@ knitr::include_graphics("img/inner_join.png")
 
 ### Tipos de junções: Anti Join
 
-Returna todas as linhas de x para as quais não existem valores correspondente em y, mantendo apenas as colunas de x. 
+Retorna todas as linhas de x para as quais não existem valores correspondente em y, mantendo apenas as colunas de x. 
 
 ```{r, out.width="80%", fig.cap="<center><b> </center></b>"}
-knitr::include_graphics("img/semi_join.png")
+knitr::include_graphics("img/anti_join.png")
 ```
 
 ---
@@ -443,7 +444,7 @@ class: middle
 
 ### Tipos de junções: Full Join
 
-Returna todas as linhas e todas as colunas tanto de x quanto de y. Returna NA no caso de não haver valor correspondente.
+Retorna todas as linhas e todas as colunas tanto de x quanto de y. Retorna NA no caso de não haver valor correspondente.
 
 ```{r, out.width="80%", fig.cap="<center><b> </center></b>"}
 knitr::include_graphics("img/full_join.png")
@@ -451,7 +452,7 @@ knitr::include_graphics("img/full_join.png")
 
 ### Tipos de junções: Left Join
 
-Returna todas as linhas de x, e todas as colunas tanto de x quanto de y. Se houver múltiplas correspondências entre x e y, todas as combinações de correspondências serão retornadas.
+Retorna todas as linhas de x, e todas as colunas tanto de x quanto de y. Se houver múltiplas correspondências entre x e y, todas as combinações de correspondências serão retornadas.
 
 
 ```{r, out.width="100%", fig.cap="<center><b> </center></b>"}
@@ -463,7 +464,7 @@ class: middle
 
 ### Tipos de junções: Right Join
 
-Returna todas as linhas de y, e todas as colunas tanto de x quanto de y. Se houver múltiplas correspondências entre x e y, todas as combinações de correspondências serão retornadas.
+Retorna todas as linhas de y, e todas as colunas tanto de x quanto de y. Se houver múltiplas correspondências entre x e y, todas as combinações de correspondências serão retornadas.
 
 
 ```{r, out.width="80%", fig.cap="<center><b> </center></b>"}
@@ -491,6 +492,50 @@ No tratamento de dados, enfatizamos a importância de limpar e organizar as base
 O conhecimento adquirido em R abre um leque de infinitas possibilidade. Com as habilidades desenvolvidas neste curso, você agora pode explorar e interpretar dados químicos de forma mais eficiente e detalhada.
 
 ---
+<!-- R-Ladies -->
+
+class:  center
+
+```{r, out.width="18%", fig.cap="<center><b> </center></b>"}
+knitr::include_graphics("img/hexlogorladies.jpeg")
+```
+
+
+- R-Ladies é uma organização mundial que **promove a diversidade de gênero** na comunidade R.
+
+- Capacitar pessoas de gêneros sub-representados, criando e fortalecendo redes colaborativas dentro da comunidade R para que elas alcancem todas e quaisquer funções e áreas de participação no mundo da tecnologia.
+
+
+**Como**
+
+* Promovendo meetups (encontros) e mentorias. 
+
+* Garantindo espaço amigável e seguro. 
+
+---
+class:  center
+
+```{r, out.width="40%", fig.cap="<center><b> </center></b>"}
+knitr::include_graphics("img/rladies_vix.png")
+```
+
+O Capítulo da cidade de Vitória foi criado em 29 de setembro de 2019. Em 2020 entrou em hiatus das atividades devido a pandemia, mas neste ano retorna para suas atividades.
+
+
+
+- [Código de conduta - R-Ladies](https://github.com/rladies/starter-kit/wiki/Code-of-Conduct#portuguese)
+
+
+- Saiba mais:
+  - RLadies Global: [https://rladies.org/](https://rladies.org/)
+  - MeetUp: [https://www.meetup.com/pt-BR/R-Ladies-Vitoria](https://www.meetup.com/pt-BR/R-Ladies-Vitoria)
+  - Twitter: [@RLadiesGlobal](https://twitter.com/rladiesglobal), [@rladiesvix](https://twitter.com/rladiesvix)
+  - Instagram: [@RLadiesVix](http://instagram.com/rladiesvix)
+  - Github: [https://github.com/rladies/meetup-presentations_vitoria](https://github.com/rladies/meetup-presentations_vitoria)
+
+<!-- Back-end e front-end -->
+---
+
 
 class: middle, center
 
