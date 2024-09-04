@@ -794,6 +794,12 @@ knitr::include_graphics("figures/libraries-logo.png")
 ```
 Imagem de [Business Science](https://www.business-science.io/code-tools/2023/09/30/top-9-r-packages.html)
 ---
+class: middle
+
+
+### O que é quimiometria?
+
+Quimiometria é uma disciplina que utiliza métodos estatísticos e matemáticos para analisar dados químicos. Ela combina conceitos de química, matemática e estatística para interpretar e modelar dados experimentais, com o objetivo de entender melhor os sistemas químicos e melhorar processos analíticos.
 
 ### Pacotes mais utilizados na quimiometria!
 

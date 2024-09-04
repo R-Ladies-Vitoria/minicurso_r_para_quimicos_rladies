@@ -4,7 +4,7 @@
     <title>R básico para Químicos  </title>
     <meta charset="utf-8" />
     <meta name="author" content="     R-Ladies Vitória" />
-    <script src="libs/header-attrs-2.27/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
     <link rel="stylesheet" href="css/kunoichi.css" type="text/css" />
     <link rel="stylesheet" href="css/ninjutsu.css" type="text/css" />
     <link rel="stylesheet" href="css/rladies-fonts.css" type="text/css" />
@@ -72,7 +72,7 @@ class: middle
 Opção com o pacote **readr**.
 
 
-``` r
+```r
 library(readr) #pacote readr
 dados_csv &lt;- read_csv(file = "dados1.csv")
 dados_txt &lt;- read_delim(file = "caminho-para-o-arquivo/dados1.txt", delim = " ")
@@ -84,7 +84,7 @@ Outra opção:
 &lt;!-- para leitura de arquivo .txt é usar a função read.table que já está salva na base, ou seja, não é necessário instalar pacote.  --&gt;
 
 
-``` r
+```r
 dados_txt2 &lt;- read.table(file="dados1.txt",header=T)
 ```
 
@@ -93,7 +93,7 @@ dados_txt2 &lt;- read.table(file="dados1.txt",header=T)
 Vale ressaltar que para cada função read_, existe uma respectiva função write_ para salvar o arquivo no formato de interesse. Como exemplo, queremos salvar a base de dados cars. 
 
 
-``` r
+```r
 write_csv(x = mtcars, path = "cars.csv")
 write_delim(x = mtcars, delim = " ", path = "cars.txt"))
 ```
@@ -106,7 +106,7 @@ class: middle
 O pacote **readxl** pode ser utilizado para leiturade arquivos do Excel, como .xls e xlsx.
 
 
-``` r
+```r
 library(readxl)
 dados_excel &lt;- read_xls(path = "dados1.xls") #Leitura do arquivo .xls
 dados_excelx &lt;- read_xlsx(path = "dados1.xlsx") #Leitura do arquivo .xlsx
@@ -114,7 +114,7 @@ dados_excelx &lt;- read_xlsx(path = "dados1.xlsx") #Leitura do arquivo .xlsx
 
 Uma maneira mais simples é a utilização da função read_excel(), pois ela auto detecta a extensão do arquivo.
 
-``` r
+```r
 library(readxl)
 dados_excel1 &lt;- read_excel(path = "dados1.xls")
 dados_excelx1 &lt;- read_excel(path = "dados1.xlsx")
@@ -127,7 +127,7 @@ dados_excelx1 &lt;- read_excel(path = "dados1.xlsx")
 &lt;!-- Para ler dados salvos em extensão de outros softwares: SPSS, STATA e SAS: pacote haven.  --&gt;
 
 
-``` r
+```r
 library(haven)
 dados_stata &lt;- read_stata("dados1.dta")
 dados_spss &lt;- read_spss("dados1.sav")
@@ -153,7 +153,7 @@ Consideramos como exemplo os dados fictícios de `\(n=30\)` gestações gemelare
 
 Para importar a base de dados: 
 
-``` r
+```r
 library(readxl)
 dados &lt;- read_excel(path = "database/petro.xls",na="NA", sheet = "Refino") # Selecionando a aba
 dados
@@ -183,7 +183,7 @@ class: middle
 Na base em excel, retire os NA's, deixando em branco, e rode o seguinte comando:
 
 
-``` r
+```r
 library(readxl)
 dados &lt;- read_excel(path = "database/petro.xls", na="NA", sheet = "Refino")
 ```
@@ -197,7 +197,7 @@ Utilizaremos as funções tidyverse e janitor para a arrumação da base de dado
 
 
 
-``` r
+```r
 library(tidyverse)
 library(janitor)
 
@@ -206,9 +206,6 @@ names(dados)
   #&gt;  [5] "Aromáticos"       "Resinas"          "Asfaltenos"       "KUOP"            
   #&gt;  [9] "Enxofre total"    "TAN"              "Data inicio"      "Data Fim"        
   #&gt; [13] "X"
-```
-
-``` r
 dados &lt;- clean_names(dados) # a função clean_names() para primeiro ajuste dos nomes das variaveis
 names(dados)
   #&gt;  [1] "amostra"          "campo"            "ponto_de_fluidez" "saturados"       
@@ -224,13 +221,13 @@ class: middle
  Na base de dados em questão, não há linhas vazias, como pode ser visto na saída abaixo. 
 
 
-``` r
+```r
 dados &lt;- remove_empty(dados,"rows")
 ```
 
 Propositalmente, inclui a coluna "oi" vazia para podermos eliminá-la com o comando abaixo: 
 
-``` r
+```r
 dados &lt;- remove_empty(dados,"cols")
 names(dados)
   #&gt;  [1] "amostra"          "campo"            "ponto_de_fluidez" "saturados"       
@@ -246,7 +243,7 @@ class: middle
 &lt;!-- Uma boa prática consiste em identificar casos duplicados, isto é, identificar se há casos erroneamente repetidos. No exemplo, a variável chave é id, em que cada indivíduo distinto apresenta um id distinto.  Para identificar casos duplicados pela variável chave "id", usamos a função get_dupes do pacote janitor.  --&gt;
 
 
-``` r
+```r
 get_dupes(dados, amostra)
   #&gt; # A tibble: 4 × 13
   #&gt;   amostra dupe_count campo    ponto_de_fluidez saturados aromaticos resinas
@@ -265,7 +262,7 @@ get_dupes(dados, amostra)
 class: middle
 
 
-``` r
+```r
 library(dplyr)
 dados1 &lt;-  distinct(dados,amostra, .keep_all = TRUE)
 dados1
@@ -295,7 +292,7 @@ class: middle
 Para identificar a classe de todas as variáveis que o R está interpretando, usamos a função str(.).  
 
 
-``` r
+```r
 # Ver a estrutura dos dados
 str(dados1)
   #&gt; tibble [70 × 12] (S3: tbl_df/tbl/data.frame)
@@ -317,7 +314,7 @@ str(dados1)
 class: middle
 
 
-``` r
+```r
 dados1$data_inicio  &lt;- as.Date(dados1$data_inicio)
 
 dados1$data_fim &lt;- as.Date(dados1$data_fim)
@@ -366,7 +363,7 @@ class:  middle
 Para variáveis qualitativas: tabela de frequências da variável campo. 
 
 
-``` r
+```r
 #do pacote janitor
 tabyl(dados1,campo) 
   #&gt;        campo  n   percent
@@ -379,7 +376,7 @@ tabyl(dados1,campo)
 Para lidar com variáveis de texto, vamos utilizar a função str_to_lower do pacote stringr.
 
 
-``` r
+```r
 
 library(stringr)
 dados1$campo &lt;- str_to_lower(dados1$campo)
@@ -400,7 +397,7 @@ class: middle
 Uma nova variável que pode ser criada é a razão entre saturados e aromáticos, que pode fornecer informações sobre a composição do petróleo.
 
 
-``` r
+```r
 dados1 &lt;- mutate(dados1, indice_saturados_aromaticos = dados1$saturados / dados1$aromaticos)
 
 summary(dados1$indice_saturados_aromaticos)
@@ -424,7 +421,7 @@ Dependendo da natureza dos dados e das análises que vão ser realizadas, é nec
 Nesse casos, iremos discretizar o ponto de fluidez
 
 
-``` r
+```r
 
 dados1$ponto_de_fluidez_categoria &lt;- cut(
   dados1$ponto_de_fluidez,
@@ -447,7 +444,7 @@ No R tem um pacote só para manipular fatores: o **forcats** (for categorial var
 Primeiro, precisamos informar o R que a variável é fator com níveis, com o comando as.factor(.).
 
 
-``` r
+```r
 library(forcats)
 
 dados1$ponto_de_fluidez_categoria &lt;- fct_recode(dados1$ponto_de_fluidez_categoria,
@@ -481,7 +478,7 @@ Vamos calcular o tempo de duração da coleta da amostra (data inicio menos a da
 
 A data está salva no formato ano-mês-dia e por isso usamos a função ymd(.) para as variáveis de data. Para calcular a diferença entre as data, usamos a função `\(%--%\)`, atribuindo ao objeto intervalo.
 
-``` r
+```r
 library(lubridate)
 intervalo &lt;- ymd(dados1$data_inicio) %--%  ymd(dados1$data_fim)
 
@@ -505,7 +502,7 @@ class: middle
 Uma etapa muitas vezes necessárias no tratamento de dados é filtrar os dados com base em alguma condição.
 
 
-``` r
+```r
 library(dplyr)
 dados_jubarte &lt;- dados1 %&gt;% filter(campo == "jubarte") # do pacote dplyr
 
@@ -537,8 +534,8 @@ class: middle
 
 Filtre do banco de dados apenas as linhas que tiver ponto de fluidez baixo e forem do campo Baleia Azul.
 
---
-Dica: Considere o "&amp;" como operador lógico.
+
+**Dica:** Considere o "&amp;" como operador lógico.
 
 ---
 class: middle
@@ -548,7 +545,7 @@ class: middle
 Agora vamos considerar uma segunda base de dados. Essa base de dados contém novas variáveis para as mesmas `\(n=70\)` amostras, identificáveis pela variável chave "amostra".
 
 
-``` r
+```r
 dados2 &lt;- read_excel(path = "database/petro1.xls",na="NA")
 
 str(dados2)
@@ -589,7 +586,7 @@ class: middle
 É o tipo mais simples de join, que combina pares de observações sempre que suas chaves são iguais.
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="img/inner_join.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="80%" /&gt;
+&lt;img src="img/inner_join.png" alt="&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;" width="80%" /&gt;
 &lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
 &lt;/div&gt;
 
@@ -598,7 +595,7 @@ class: middle
 Returna todas as linhas de x para as quais não existem valores correspondente em y, mantendo apenas as colunas de x. 
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="img/semi_join.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="80%" /&gt;
+&lt;img src="img/semi_join.png" alt="&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;" width="80%" /&gt;
 &lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
 &lt;/div&gt;
 
@@ -610,7 +607,7 @@ class: middle
 Returna todas as linhas e todas as colunas tanto de x quanto de y. Returna NA no caso de não haver valor correspondente.
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="img/full_join.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="80%" /&gt;
+&lt;img src="img/full_join.png" alt="&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;" width="80%" /&gt;
 &lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
 &lt;/div&gt;
 
@@ -620,7 +617,7 @@ Returna todas as linhas de x, e todas as colunas tanto de x quanto de y. Se houv
 
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="img/left_join.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="100%" /&gt;
+&lt;img src="img/left_join.png" alt="&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;" width="100%" /&gt;
 &lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
 &lt;/div&gt;
 
@@ -633,7 +630,7 @@ Returna todas as linhas de y, e todas as colunas tanto de x quanto de y. Se houv
 
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="img/right_join.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="80%" /&gt;
+&lt;img src="img/right_join.png" alt="&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;" width="80%" /&gt;
 &lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
 &lt;/div&gt;
 

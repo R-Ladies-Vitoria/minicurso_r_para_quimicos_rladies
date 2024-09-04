@@ -380,8 +380,8 @@ class: middle
 
 Filtre do banco de dados apenas as linhas que tiver ponto de fluidez baixo e forem do campo Baleia Azul.
 
---
-Dica: Considere o "&" como operador lógico.
+
+**Dica:** Considere o "&" como operador lógico.
 
 ---
 class: middle
