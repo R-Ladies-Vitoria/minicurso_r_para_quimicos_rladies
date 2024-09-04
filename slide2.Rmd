@@ -528,7 +528,6 @@ O Capítulo da cidade de Vitória foi criado em 29 de setembro de 2019. Em 2020 
 - Saiba mais:
   - RLadies Global: [https://rladies.org/](https://rladies.org/)
   - MeetUp: [https://www.meetup.com/pt-BR/R-Ladies-Vitoria](https://www.meetup.com/pt-BR/R-Ladies-Vitoria)
-  - Twitter: [@RLadiesGlobal](https://twitter.com/rladiesglobal), [@rladiesvix](https://twitter.com/rladiesvix)
   - Instagram: [@RLadiesVix](http://instagram.com/rladiesvix)
   - Github: [https://github.com/rladies/meetup-presentations_vitoria](https://github.com/rladies/meetup-presentations_vitoria)
 

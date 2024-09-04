@@ -60,8 +60,6 @@ class: middle
 
 - Tratamento de dados
 
-- Medidas descritivas
-
 &lt;!-- R-Ladies --&gt;
 ---
 class:  center
@@ -101,7 +99,6 @@ O Capítulo da cidade de Vitória foi criado em 29 de setembro de 2019. Em 2020 
 - Saiba mais:
   - RLadies Global: [https://rladies.org/](https://rladies.org/)
   - MeetUp: [https://www.meetup.com/pt-BR/R-Ladies-Vitoria](https://www.meetup.com/pt-BR/R-Ladies-Vitoria)
-  - Twitter: [@RLadiesGlobal](https://twitter.com/rladiesglobal), [@rladiesvix](https://twitter.com/rladiesvix)
   - Instagram: [@RLadiesVix](http://instagram.com/rladiesvix)
   - Github: [https://github.com/rladies/meetup-presentations_vitoria](https://github.com/rladies/meetup-presentations_vitoria)
 
@@ -630,16 +627,16 @@ Operações matriciais
 xa &lt;- x2[1:2,1:2]
 xb &lt;- matrix(rnorm(4),2,2)
 xa*xb #multiplicacao ponto a ponto
-  #&gt;        [,1]     [,2]
-  #&gt;  -7.1784552 17.45578
-  #&gt;   0.9415813 -7.15228
+  #&gt;         [,1]        [,2]
+  #&gt;  -29.7856754 -11.1973078
+  #&gt;   -0.4037507   0.6017449
 ```
 
 ``` r
 xa%*%xb #multiplicacao matricial
-  #&gt;        [,1]      [,2]
-  #&gt;  -0.1165957 -2.752356
-  #&gt;   1.7203661 -4.824842
+  #&gt;        [,1]       [,2]
+  #&gt;  -32.813806 -8.1999713
+  #&gt;   -5.793664 -0.8912295
 ```
 
 ``` r
@@ -796,16 +793,16 @@ dim3
   #&gt; , , 1
   #&gt; 
   #&gt;            [,1]       [,2]       [,3]
-  #&gt; [1,] -1.0396876 -1.0280908 -0.7927110
-  #&gt; [2,]  2.1266041  0.1937368  0.1786926
-  #&gt; [3,] -0.1250737 -0.3657030 -0.7038310
+  #&gt; [1,] -0.3218251  1.0957029 -0.1056684
+  #&gt; [2,]  0.2543971 -0.3063296 -0.3096293
+  #&gt; [3,] -0.9580641  1.3036895 -0.6326096
   #&gt; 
   #&gt; , , 2
   #&gt; 
-  #&gt;             [,1]      [,2]      [,3]
-  #&gt; [1,] -1.31495381 0.4232439 0.9205095
-  #&gt; [2,] -0.19731603 1.6772494 0.1582236
-  #&gt; [3,] -0.09257479 0.7420004 1.4848047
+  #&gt;           [,1]        [,2]        [,3]
+  #&gt; [1,] 0.4761650  0.95720353 -1.16671586
+  #&gt; [2,] 0.8882546  0.02458632  0.55879377
+  #&gt; [3,] 0.5220501 -0.01954786 -0.09799875
 ```
 
 ---
@@ -827,16 +824,16 @@ ls &lt;- list(ls1 = 'a',ls2 = c(1,2,3),ls3 = array(rnorm(6),dim = c(3,1,2,1))); 
   #&gt; , , 1, 1
   #&gt; 
   #&gt;           [,1]
-  #&gt; [1,] 0.1607715
-  #&gt; [2,] 0.8519753
-  #&gt; [3,] 0.5899961
+  #&gt; [1,] 1.1778381
+  #&gt; [2,] 0.9060457
+  #&gt; [3,] 0.1706212
   #&gt; 
   #&gt; , , 2, 1
   #&gt; 
-  #&gt;            [,1]
-  #&gt; [1,]  0.2186330
-  #&gt; [2,] -0.6679378
-  #&gt; [3,]  0.6819517
+  #&gt;             [,1]
+  #&gt; [1,] -0.73583469
+  #&gt; [2,] -1.31615212
+  #&gt; [3,] -0.02273556
 ```
 ]
 ---
