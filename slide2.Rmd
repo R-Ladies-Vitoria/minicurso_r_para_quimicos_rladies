@@ -214,7 +214,6 @@ dados1
 ---
 class: middle
 
-
 ### Identificar tipo e classe de todas as variáveis da base
 Para identificar a classe de todas as variáveis que o R está interpretando, usamos a função str(.).  
 
@@ -227,7 +226,9 @@ str(dados1)
 class: middle
 
 ```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
-dados1$data  <- as.Date(dados1$data)
+dados1$data_inicio  <- as.Date(dados1$data_inicio)
+
+dados1$data_fim <- as.Date(dados1$data_fim)
 str(dados1)
 ```
 
@@ -274,6 +275,27 @@ tabyl(dados1,campo)
 ```
 
 ---
+class: middle
+
+### Transformação de variáveis quantitativas
+
+É possível criar novas variáveis quantitativas a partir de outras variáveis. A criação de novas variáveis pode ajudar a capturar relações complexas entre os dados e fornecer insights adicionais. 
+Uma nova variável que pode ser criada é a razão entre saturados e aromáticos, que pode fornecer informações sobre a composição do petróleo.
+
+```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
+dados1 <- mutate(dados1, indice_saturados_aromaticos = dados1$saturados / dados1$aromaticos)
+
+summary(dados1$indice_saturados_aromaticos)
+```
+
+---
+class: middle
+
+### Exercicio
+
+Crie uma variável que calcula a razão entre resinas e asfaltenos, indicando a estabilidade coloidal do petróleo.
+
+---
 
 class: middle
 
@@ -283,26 +305,28 @@ Nesse casos, iremos discretizar o ponto de fluidez
 
 ```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
 
-dados1$ponto_fluidez_categoria <- cut(
+dados1$ponto_de_fluidez_categoria <- cut(
   dados1$ponto_de_fluidez,
   breaks = c(-Inf, 0, 10, Inf),  # Definindo os limites das categorias
-  labels = c("Baixo", "Médio", "Alto"),
+  labels = c("Baixo", "Medio", "Alto"),
   right = TRUE  # Inclui o valor de limite superior na categoria
 )
 
-tabyl(dados1, ponto_fluidez_categoria)
+tabyl(dados1, ponto_de_fluidez_categoria)
 ```
 ---
+### Discretizar dados
 
 No R tem um pacote só para manipular fatores: o **forcats** (for categorial variables). 
 
 Primeiro, precisamos informar o R que a variável é fator com níveis, com o comando as.factor(.).
 
 ```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
+library(forcats)
 
-dados1$ponto_fluidez_categoria <- fct_recode(dados1$ponto_fluidez_categoria,
+dados1$ponto_de_fluidez_categoria <- fct_recode(dados1$ponto_de_fluidez_categoria,
                                             "Baixo" = "Baixo",
-                                            "Médio" = "Médio",
+                                            "Medio" = "Medio",
                                             "Alto" = "Alto")
 fct_count(dados1$ponto_de_fluidez_categoria)
 ```
@@ -310,7 +334,7 @@ fct_count(dados1$ponto_de_fluidez_categoria)
 
 class: middle
 
-##Exercício
+### Exercício
 
 O TAN (Número de Acidez Total) é uma medida da acidez de um petróleo ou produto petroquímico, a interpretação dos níveis de acidez pode variar dependendo do tipo de petróleo. Discretize essa variável com base no seguinte critério:
 - Baixo TAN: 0 - 0.5 mg KOH/g
@@ -320,18 +344,156 @@ O TAN (Número de Acidez Total) é uma medida da acidez de um petróleo ou produ
 ---
 class: middle
 
-### Transformação de variáveis quantitativas
+### Diferença de datas
+Vamos calcular o tempo de duração da coleta da amostra (data inicio menos a data final). Para realizar operações com data, usaremos o pacote **lubridate**. 
 
-É possível criar novas variáveis quantitativas a partir de outras variáveis. A criação de novas variáveis pode ajudar a capturar relações complexas entre os dados e fornecer insights adicionais. 
-Uma nova variável que pode ser criada é a razão entre saturados e aromáticos, que pode fornecer informações sobre a composição do petróleo.
-
+A data está salva no formato ano-mês-dia e por isso usamos a função ymd(.) para as variáveis de data. Para calcular a diferença entre as data, usamos a função $%--%$, atribuindo ao objeto intervalo.
 ```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
-dados1 <- mutate(dados1, indice_saturados_aromaticos = dados$saturados / dados$aromaticos)
+library(lubridate)
+intervalo <- ymd(dados1$data_inicio) %--%  ymd(dados1$data_fim)
+
+dados1$tempo_coleta <- intervalo / ddays(1)  #número de dias
+
+dados1$tempo_coleta
 ```
+<!-- Vale ressaltar que há várias funções importantes para lidar com variáveis de data no pacote lubridate. Para mais detalhes, ver o [vignette](https://cran.r-project.org/web/packages/lubridate/vignettes/lubridate.html). -->
 
 ---
 
+class: middle
+
+### Filtrando banco de dados
+
+Uma etapa muitas vezes necessárias no tratamento de dados é filtrar os dados com base em alguma condição.
+
+```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
+library(dplyr)
+dados_jubarte <- dados1 %>% filter(campo == "jubarte") # do pacote dplyr
+
+dados_jubarte
+```
+
+---
+class: middle
+
+### Exercício: 
+
+Filtre do banco de dados apenas as linhas que tiver ponto de fluidez baixo e forem do campo Baleia Azul.
+
+--
+Dica: Considere o "&" como operador lógico.
+
+---
+class: middle
+
+### Combinação de bases de dados
+
+Agora vamos considerar uma segunda base de dados. Essa base de dados contém novas variáveis para as mesmas $n=70$ amostras, identificáveis pela variável chave "amostra".
+
+```{r, eval=TRUE,include=TRUE,echo=TRUE,error=TRUE}
+dados2 <- read_excel(path = "database/petro1.xls",na="NA")
+
+str(dados2)
+```
+
+---
+class: middle
+
+## Exercício: 
+Realize o tratamento da base de dados "dados2". 
+
+---
+class: middle
+
+### Combinação de bases de dados
+
+Para essa tarefa, há o pacote **dplyr** com diferentes tipos de junções (joins), cada uma com uma lógica própria de combinação.
+
+### Tipos de junções
+
+* inner_join () - retorna valores de ambas as tabelas somente onde há uma correspondência.
+
+* left_join () - retorna todos os valores da primeira tabela mencionada, mais os da segunda tabela correspondente.
+
+* semi_join () - filtra a primeira tabela mencionada para incluir apenas os valores que possuem correspondências na segunda tabela.
+
+* anti_join () - filtra a primeira tabela mencionada para incluir apenas valores que não possuem correspondências na segunda tabela.
+
+---
+class: middle
+
+### Tipos de junções: Inner Join
+
+É o tipo mais simples de join, que combina pares de observações sempre que suas chaves são iguais.
+
+```{r, out.width="80%", fig.cap="<center><b> </center></b>"}
+knitr::include_graphics("img/inner_join.png")
+```
+
+### Tipos de junções: Anti Join
+
+Returna todas as linhas de x para as quais não existem valores correspondente em y, mantendo apenas as colunas de x. 
+
+```{r, out.width="80%", fig.cap="<center><b> </center></b>"}
+knitr::include_graphics("img/semi_join.png")
+```
+
+---
+class: middle
+
+### Tipos de junções: Full Join
+
+Returna todas as linhas e todas as colunas tanto de x quanto de y. Returna NA no caso de não haver valor correspondente.
+
+```{r, out.width="80%", fig.cap="<center><b> </center></b>"}
+knitr::include_graphics("img/full_join.png")
+```
+
+### Tipos de junções: Left Join
+
+Returna todas as linhas de x, e todas as colunas tanto de x quanto de y. Se houver múltiplas correspondências entre x e y, todas as combinações de correspondências serão retornadas.
 
 
+```{r, out.width="100%", fig.cap="<center><b> </center></b>"}
+knitr::include_graphics("img/left_join.png")
+```
+
+---
+class: middle
+
+### Tipos de junções: Right Join
+
+Returna todas as linhas de y, e todas as colunas tanto de x quanto de y. Se houver múltiplas correspondências entre x e y, todas as combinações de correspondências serão retornadas.
 
 
+```{r, out.width="80%", fig.cap="<center><b> </center></b>"}
+knitr::include_graphics("img/right_join.png")
+```
+
+---
+class: middle
+
+### Exercício 
+
+Observando a natureza dos dados, discutam, qual o melhor tipo de junção? E porquê? 
+Faça a junção no R.
+
+---
+class: middle
+
+## Recapitulando
+
+Neste curso, exploramos diversas funcionalidades do R, abordando conceitos básicos e comandos essenciais. Em seguida, avançamos para a importação de dados.
+No tratamento de dados, enfatizamos a importância de limpar e organizar as bases de dados. Também abordamos a criação de novas variáveis e a discretização de variáveis quantitativas, o que é essencial para análises mais detalhadas. Na parte de junção de bases de dados, discutimos os diferentes tipos de junções 
+
+## E agora? Infinitas possibilidades...
+
+O conhecimento adquirido em R abre um leque de infinitas possibilidade. Com as habilidades desenvolvidas neste curso, você agora pode explorar e interpretar dados químicos de forma mais eficiente e detalhada.
+
+---
+
+class: middle, center
+
+## Obrigada!
+
+![título](https://media.giphy.com/media/l3q2u6MXJJEKiTZIY/giphy.gif)

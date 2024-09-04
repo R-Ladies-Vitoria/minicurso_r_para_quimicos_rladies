@@ -157,24 +157,22 @@ Para importar a base de dados:
 library(readxl)
 dados &lt;- read_excel(path = "database/petro.xls",na="NA", sheet = "Refino") # Selecionando a aba
 dados
-  #&gt; # A tibble: 72 × 14
-  #&gt;    Amostra Campo       `Densidade API` Viscosidade Cinemáti…¹ `Ponto de Fluidez`
-  #&gt;      &lt;dbl&gt; &lt;chr&gt;                 &lt;dbl&gt;                  &lt;dbl&gt;              &lt;dbl&gt;
-  #&gt;  1       1 FAZA                   42.2                   3.76                 17
-  #&gt;  2       2 Baleia Azul            20                    62.0                 -42
-  #&gt;  3       3 Golfinho               26.7                  14.8                 -33
-  #&gt;  4       4 Golfinho               27.4                  11.8                 -38
-  #&gt;  5       5 Jubarte                18.2                 139                   -27
-  #&gt;  6       5 Jubarte                18.2                 139                   -27
-  #&gt;  7       6 Golfinho               29.3                   9.09                -21
-  #&gt;  8       7 FAZA                   29.6                   8.82                  9
-  #&gt;  9       8 Baleia Azul            22.1                  37.4                 -28
-  #&gt; 10       9 Golfinho               25.6                  15.2                 -36
+  #&gt; # A tibble: 72 × 13
+  #&gt;    Amostra Campo      `Ponto de Fluidez` Saturados Aromáticos Resinas Asfaltenos
+  #&gt;      &lt;dbl&gt; &lt;chr&gt;                   &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+  #&gt;  1       1 FAZA                       17      79.6       12.8    7.09       0.51
+  #&gt;  2       2 Baleia Az…                -42      40.4       35.1   23          1.51
+  #&gt;  3       3 Golfinho                  -33      44.9       22.1   31.9        1.1 
+  #&gt;  4       4 Golfinho                  -38      56.2       30.7   11.9        1.19
+  #&gt;  5       5 Jubarte                   -27      53         28.5   18.5        0.5 
+  #&gt;  6       5 Jubarte                   -27      53         28.5   18.5        0.5 
+  #&gt;  7       6 Golfinho                  -21      58.2       26.5   14.8        0.54
+  #&gt;  8       7 FAZA                        9      63.9       21.6   13.9        0.8 
+  #&gt;  9       8 Baleia Az…                -28      54.2       25.6   19.6        0.6 
+  #&gt; 10       9 Golfinho                  -36      58.6       23.4   18          0.5 
   #&gt; # ℹ 62 more rows
-  #&gt; # ℹ abbreviated name: ¹​`Viscosidade Cinemática`
-  #&gt; # ℹ 9 more variables: Saturados &lt;dbl&gt;, Aromáticos &lt;dbl&gt;, Resinas &lt;dbl&gt;,
-  #&gt; #   Asfaltenos &lt;dbl&gt;, KUOP &lt;dbl&gt;, `Enxofre total` &lt;dbl&gt;, TAN &lt;dbl&gt;,
-  #&gt; #   Data &lt;dttm&gt;, X &lt;lgl&gt;
+  #&gt; # ℹ 6 more variables: KUOP &lt;dbl&gt;, `Enxofre total` &lt;dbl&gt;, TAN &lt;dbl&gt;,
+  #&gt; #   `Data inicio` &lt;dttm&gt;, `Data Fim` &lt;dttm&gt;, X &lt;lgl&gt;
 ```
 
 ---
@@ -204,21 +202,19 @@ library(tidyverse)
 library(janitor)
 
 names(dados)
-  #&gt;  [1] "Amostra"                "Campo"                  "Densidade API"         
-  #&gt;  [4] "Viscosidade Cinemática" "Ponto de Fluidez"       "Saturados"             
-  #&gt;  [7] "Aromáticos"             "Resinas"                "Asfaltenos"            
-  #&gt; [10] "KUOP"                   "Enxofre total"          "TAN"                   
-  #&gt; [13] "Data"                   "X"
+  #&gt;  [1] "Amostra"          "Campo"            "Ponto de Fluidez" "Saturados"       
+  #&gt;  [5] "Aromáticos"       "Resinas"          "Asfaltenos"       "KUOP"            
+  #&gt;  [9] "Enxofre total"    "TAN"              "Data inicio"      "Data Fim"        
+  #&gt; [13] "X"
 ```
 
 ``` r
 dados &lt;- clean_names(dados) # a função clean_names() para primeiro ajuste dos nomes das variaveis
 names(dados)
-  #&gt;  [1] "amostra"                "campo"                  "densidade_api"         
-  #&gt;  [4] "viscosidade_cinematica" "ponto_de_fluidez"       "saturados"             
-  #&gt;  [7] "aromaticos"             "resinas"                "asfaltenos"            
-  #&gt; [10] "kuop"                   "enxofre_total"          "tan"                   
-  #&gt; [13] "data"                   "x"
+  #&gt;  [1] "amostra"          "campo"            "ponto_de_fluidez" "saturados"       
+  #&gt;  [5] "aromaticos"       "resinas"          "asfaltenos"       "kuop"            
+  #&gt;  [9] "enxofre_total"    "tan"              "data_inicio"      "data_fim"        
+  #&gt; [13] "x"
 ```
 
 ---
@@ -237,11 +233,9 @@ Propositalmente, inclui a coluna "oi" vazia para podermos eliminá-la com o coma
 ``` r
 dados &lt;- remove_empty(dados,"cols")
 names(dados)
-  #&gt;  [1] "amostra"                "campo"                  "densidade_api"         
-  #&gt;  [4] "viscosidade_cinematica" "ponto_de_fluidez"       "saturados"             
-  #&gt;  [7] "aromaticos"             "resinas"                "asfaltenos"            
-  #&gt; [10] "kuop"                   "enxofre_total"          "tan"                   
-  #&gt; [13] "data"
+  #&gt;  [1] "amostra"          "campo"            "ponto_de_fluidez" "saturados"       
+  #&gt;  [5] "aromaticos"       "resinas"          "asfaltenos"       "kuop"            
+  #&gt;  [9] "enxofre_total"    "tan"              "data_inicio"      "data_fim"
 ```
 
 ---
@@ -254,15 +248,15 @@ class: middle
 
 ``` r
 get_dupes(dados, amostra)
-  #&gt; # A tibble: 4 × 14
-  #&gt;   amostra dupe_count campo densidade_api viscosidade_cinematica ponto_de_fluidez
-  #&gt;     &lt;dbl&gt;      &lt;int&gt; &lt;chr&gt;         &lt;dbl&gt;                  &lt;dbl&gt;            &lt;dbl&gt;
-  #&gt; 1       5          2 Juba…          18.2                  139                -27
-  #&gt; 2       5          2 Juba…          18.2                  139                -27
-  #&gt; 3      17          2 Golf…          25                     19.8              -42
-  #&gt; 4      17          2 Golf…          25                     19.8              -42
-  #&gt; # ℹ 8 more variables: saturados &lt;dbl&gt;, aromaticos &lt;dbl&gt;, resinas &lt;dbl&gt;,
-  #&gt; #   asfaltenos &lt;dbl&gt;, kuop &lt;dbl&gt;, enxofre_total &lt;dbl&gt;, tan &lt;dbl&gt;, data &lt;dttm&gt;
+  #&gt; # A tibble: 4 × 13
+  #&gt;   amostra dupe_count campo    ponto_de_fluidez saturados aromaticos resinas
+  #&gt;     &lt;dbl&gt;      &lt;int&gt; &lt;chr&gt;               &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;
+  #&gt; 1       5          2 Jubarte               -27      53         28.5    18.5
+  #&gt; 2       5          2 Jubarte               -27      53         28.5    18.5
+  #&gt; 3      17          2 Golfinho              -42      47.2       26.9    23.1
+  #&gt; 4      17          2 Golfinho              -42      47.2       26.9    23.1
+  #&gt; # ℹ 6 more variables: asfaltenos &lt;dbl&gt;, kuop &lt;dbl&gt;, enxofre_total &lt;dbl&gt;,
+  #&gt; #   tan &lt;dbl&gt;, data_inicio &lt;dttm&gt;, data_fim &lt;dttm&gt;
 ```
 &lt;!-- No exemplo, note que os IDs=2, 11, 17 e 23 aparecem dois casos cada, o que não está correto para essa aplicação.  --&gt;
 &lt;!-- Para eliminar linhas duplicadas identificadas, usamos a função distinct do pacote dplyr. No objeto dados1 salvamos os dados sem os casos duplicados.  --&gt;
@@ -275,28 +269,27 @@ class: middle
 library(dplyr)
 dados1 &lt;-  distinct(dados,amostra, .keep_all = TRUE)
 dados1
-  #&gt; # A tibble: 70 × 13
-  #&gt;    amostra campo densidade_api viscosidade_cinematica ponto_de_fluidez saturados
-  #&gt;      &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt;                  &lt;dbl&gt;            &lt;dbl&gt;     &lt;dbl&gt;
-  #&gt;  1       1 FAZA           42.2                   3.76               17      79.6
-  #&gt;  2       2 Bale…          20                    62.0               -42      40.4
-  #&gt;  3       3 Golf…          26.7                  14.8               -33      44.9
-  #&gt;  4       4 Golf…          27.4                  11.8               -38      56.2
-  #&gt;  5       5 Juba…          18.2                 139                 -27      53  
-  #&gt;  6       6 Golf…          29.3                   9.09              -21      58.2
-  #&gt;  7       7 FAZA           29.6                   8.82                9      63.9
-  #&gt;  8       8 Bale…          22.1                  37.4               -28      54.2
-  #&gt;  9       9 Golf…          25.6                  15.2               -36      58.6
-  #&gt; 10      10 Golf…          24.9                  22.0               -38      47.2
+  #&gt; # A tibble: 70 × 12
+  #&gt;    amostra campo  ponto_de_fluidez saturados aromaticos resinas asfaltenos  kuop
+  #&gt;      &lt;dbl&gt; &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;
+  #&gt;  1       1 FAZA                 17      79.6       12.8    7.09       0.51  12.5
+  #&gt;  2       2 Balei…              -42      40.4       35.1   23          1.51  11.6
+  #&gt;  3       3 Golfi…              -33      44.9       22.1   31.9        1.1   11.8
+  #&gt;  4       4 Golfi…              -38      56.2       30.7   11.9        1.19  11.8
+  #&gt;  5       5 Jubar…              -27      53         28.5   18.5        0.5   11.6
+  #&gt;  6       6 Golfi…              -21      58.2       26.5   14.8        0.54  12  
+  #&gt;  7       7 FAZA                  9      63.9       21.6   13.9        0.8   11.8
+  #&gt;  8       8 Balei…              -28      54.2       25.6   19.6        0.6   11.7
+  #&gt;  9       9 Golfi…              -36      58.6       23.4   18          0.5   11.8
+  #&gt; 10      10 Golfi…              -38      47.2       30.4   19.8        2.57  11.8
   #&gt; # ℹ 60 more rows
-  #&gt; # ℹ 7 more variables: aromaticos &lt;dbl&gt;, resinas &lt;dbl&gt;, asfaltenos &lt;dbl&gt;,
-  #&gt; #   kuop &lt;dbl&gt;, enxofre_total &lt;dbl&gt;, tan &lt;dbl&gt;, data &lt;dttm&gt;
+  #&gt; # ℹ 4 more variables: enxofre_total &lt;dbl&gt;, tan &lt;dbl&gt;, data_inicio &lt;dttm&gt;,
+  #&gt; #   data_fim &lt;dttm&gt;
 ```
 &lt;!-- Ao chamar os dados1,  apenas as dez primeiras linhas são impressas na tela e as colunas que não couberem na largura do console serão omitidas. Vale ressaltar que também são apresentadas a dimensão da tabela (no exemplo, 30X12) e as classes de cada coluna. --&gt;
 
 ---
 class: middle
-
 
 ### Identificar tipo e classe de todas as variáveis da base
 Para identificar a classe de todas as variáveis que o R está interpretando, usamos a função str(.).  
@@ -305,20 +298,19 @@ Para identificar a classe de todas as variáveis que o R está interpretando, us
 ``` r
 # Ver a estrutura dos dados
 str(dados1)
-  #&gt; tibble [70 × 13] (S3: tbl_df/tbl/data.frame)
-  #&gt;  $ amostra               : num [1:70] 1 2 3 4 5 6 7 8 9 10 ...
-  #&gt;  $ campo                 : chr [1:70] "FAZA" "Baleia Azul" "Golfinho" "Golfinho" ...
-  #&gt;  $ densidade_api         : num [1:70] 42.2 20 26.7 27.4 18.2 29.3 29.6 22.1 25.6 24.9 ...
-  #&gt;  $ viscosidade_cinematica: num [1:70] 3.76 62.01 14.77 11.83 139 ...
-  #&gt;  $ ponto_de_fluidez      : num [1:70] 17 -42 -33 -38 -27 -21 9 -28 -36 -38 ...
-  #&gt;  $ saturados             : num [1:70] 79.6 40.4 44.9 56.2 53 58.2 63.9 54.2 58.6 47.2 ...
-  #&gt;  $ aromaticos            : num [1:70] 12.8 35.1 22.1 30.7 28.5 26.5 21.6 25.6 23.4 30.4 ...
-  #&gt;  $ resinas               : num [1:70] 7.09 23 31.9 11.91 18.5 ...
-  #&gt;  $ asfaltenos            : num [1:70] 0.51 1.51 1.1 1.19 0.5 0.54 0.8 0.6 0.5 2.57 ...
-  #&gt;  $ kuop                  : num [1:70] 12.5 11.6 11.8 11.8 11.6 12 11.8 11.7 11.8 11.8 ...
-  #&gt;  $ enxofre_total         : num [1:70] 0.0609 0.585 0.5 0.76 0.46 0.316 0.27 0.48 0.351 0.526 ...
-  #&gt;  $ tan                   : num [1:70] 0.05 1.92 0.19 0.1 1.15 0.08 0.1 1.82 1.18 0.4 ...
-  #&gt;  $ data                  : POSIXct[1:70], format: "2020-02-14" "2021-04-22" ...
+  #&gt; tibble [70 × 12] (S3: tbl_df/tbl/data.frame)
+  #&gt;  $ amostra         : num [1:70] 1 2 3 4 5 6 7 8 9 10 ...
+  #&gt;  $ campo           : chr [1:70] "FAZA" "Baleia Azul" "Golfinho" "Golfinho" ...
+  #&gt;  $ ponto_de_fluidez: num [1:70] 17 -42 -33 -38 -27 -21 9 -28 -36 -38 ...
+  #&gt;  $ saturados       : num [1:70] 79.6 40.4 44.9 56.2 53 58.2 63.9 54.2 58.6 47.2 ...
+  #&gt;  $ aromaticos      : num [1:70] 12.8 35.1 22.1 30.7 28.5 26.5 21.6 25.6 23.4 30.4 ...
+  #&gt;  $ resinas         : num [1:70] 7.09 23 31.9 11.91 18.5 ...
+  #&gt;  $ asfaltenos      : num [1:70] 0.51 1.51 1.1 1.19 0.5 0.54 0.8 0.6 0.5 2.57 ...
+  #&gt;  $ kuop            : num [1:70] 12.5 11.6 11.8 11.8 11.6 12 11.8 11.7 11.8 11.8 ...
+  #&gt;  $ enxofre_total   : num [1:70] 0.0609 0.585 0.5 0.76 0.46 0.316 0.27 0.48 0.351 0.526 ...
+  #&gt;  $ tan             : num [1:70] 0.05 1.92 0.19 0.1 1.15 0.08 0.1 1.82 1.18 0.4 ...
+  #&gt;  $ data_inicio     : POSIXct[1:70], format: "2020-02-14" "2021-04-22" ...
+  #&gt;  $ data_fim        : POSIXct[1:70], format: "2020-02-21" "2021-04-25" ...
 ```
 
 ---
@@ -326,22 +318,23 @@ class: middle
 
 
 ``` r
-dados1$data  &lt;- as.Date(dados1$data)
+dados1$data_inicio  &lt;- as.Date(dados1$data_inicio)
+
+dados1$data_fim &lt;- as.Date(dados1$data_fim)
 str(dados1)
-  #&gt; tibble [70 × 13] (S3: tbl_df/tbl/data.frame)
-  #&gt;  $ amostra               : num [1:70] 1 2 3 4 5 6 7 8 9 10 ...
-  #&gt;  $ campo                 : chr [1:70] "FAZA" "Baleia Azul" "Golfinho" "Golfinho" ...
-  #&gt;  $ densidade_api         : num [1:70] 42.2 20 26.7 27.4 18.2 29.3 29.6 22.1 25.6 24.9 ...
-  #&gt;  $ viscosidade_cinematica: num [1:70] 3.76 62.01 14.77 11.83 139 ...
-  #&gt;  $ ponto_de_fluidez      : num [1:70] 17 -42 -33 -38 -27 -21 9 -28 -36 -38 ...
-  #&gt;  $ saturados             : num [1:70] 79.6 40.4 44.9 56.2 53 58.2 63.9 54.2 58.6 47.2 ...
-  #&gt;  $ aromaticos            : num [1:70] 12.8 35.1 22.1 30.7 28.5 26.5 21.6 25.6 23.4 30.4 ...
-  #&gt;  $ resinas               : num [1:70] 7.09 23 31.9 11.91 18.5 ...
-  #&gt;  $ asfaltenos            : num [1:70] 0.51 1.51 1.1 1.19 0.5 0.54 0.8 0.6 0.5 2.57 ...
-  #&gt;  $ kuop                  : num [1:70] 12.5 11.6 11.8 11.8 11.6 12 11.8 11.7 11.8 11.8 ...
-  #&gt;  $ enxofre_total         : num [1:70] 0.0609 0.585 0.5 0.76 0.46 0.316 0.27 0.48 0.351 0.526 ...
-  #&gt;  $ tan                   : num [1:70] 0.05 1.92 0.19 0.1 1.15 0.08 0.1 1.82 1.18 0.4 ...
-  #&gt;  $ data                  : Date[1:70], format: "2020-02-14" "2021-04-22" ...
+  #&gt; tibble [70 × 12] (S3: tbl_df/tbl/data.frame)
+  #&gt;  $ amostra         : num [1:70] 1 2 3 4 5 6 7 8 9 10 ...
+  #&gt;  $ campo           : chr [1:70] "FAZA" "Baleia Azul" "Golfinho" "Golfinho" ...
+  #&gt;  $ ponto_de_fluidez: num [1:70] 17 -42 -33 -38 -27 -21 9 -28 -36 -38 ...
+  #&gt;  $ saturados       : num [1:70] 79.6 40.4 44.9 56.2 53 58.2 63.9 54.2 58.6 47.2 ...
+  #&gt;  $ aromaticos      : num [1:70] 12.8 35.1 22.1 30.7 28.5 26.5 21.6 25.6 23.4 30.4 ...
+  #&gt;  $ resinas         : num [1:70] 7.09 23 31.9 11.91 18.5 ...
+  #&gt;  $ asfaltenos      : num [1:70] 0.51 1.51 1.1 1.19 0.5 0.54 0.8 0.6 0.5 2.57 ...
+  #&gt;  $ kuop            : num [1:70] 12.5 11.6 11.8 11.8 11.6 12 11.8 11.7 11.8 11.8 ...
+  #&gt;  $ enxofre_total   : num [1:70] 0.0609 0.585 0.5 0.76 0.46 0.316 0.27 0.48 0.351 0.526 ...
+  #&gt;  $ tan             : num [1:70] 0.05 1.92 0.19 0.1 1.15 0.08 0.1 1.82 1.18 0.4 ...
+  #&gt;  $ data_inicio     : Date[1:70], format: "2020-02-14" "2021-04-22" ...
+  #&gt;  $ data_fim        : Date[1:70], format: "2020-02-21" "2021-04-25" ...
 ```
 
 ---
@@ -399,6 +392,30 @@ tabyl(dados1,campo)
 ```
 
 ---
+class: middle
+
+### Transformação de variáveis quantitativas
+
+É possível criar novas variáveis quantitativas a partir de outras variáveis. A criação de novas variáveis pode ajudar a capturar relações complexas entre os dados e fornecer insights adicionais. 
+Uma nova variável que pode ser criada é a razão entre saturados e aromáticos, que pode fornecer informações sobre a composição do petróleo.
+
+
+``` r
+dados1 &lt;- mutate(dados1, indice_saturados_aromaticos = dados1$saturados / dados1$aromaticos)
+
+summary(dados1$indice_saturados_aromaticos)
+  #&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  #&gt;  0.9722  1.4664  1.9942  2.3433  2.6367  6.2188
+```
+
+---
+class: middle
+
+### Exercicio
+
+Crie uma variável que calcula a razão entre resinas e asfaltenos, indicando a estabilidade coloidal do petróleo.
+
+---
 
 class: middle
 
@@ -409,20 +426,21 @@ Nesse casos, iremos discretizar o ponto de fluidez
 
 ``` r
 
-dados1$ponto_fluidez_categoria &lt;- cut(
+dados1$ponto_de_fluidez_categoria &lt;- cut(
   dados1$ponto_de_fluidez,
   breaks = c(-Inf, 0, 10, Inf),  # Definindo os limites das categorias
-  labels = c("Baixo", "Médio", "Alto"),
+  labels = c("Baixo", "Medio", "Alto"),
   right = TRUE  # Inclui o valor de limite superior na categoria
 )
 
-tabyl(dados1, ponto_fluidez_categoria)
-  #&gt;  ponto_fluidez_categoria  n   percent
-  #&gt;                    Baixo 49 0.7000000
-  #&gt;                    Médio 11 0.1571429
-  #&gt;                     Alto 10 0.1428571
+tabyl(dados1, ponto_de_fluidez_categoria)
+  #&gt;  ponto_de_fluidez_categoria  n   percent
+  #&gt;                       Baixo 49 0.7000000
+  #&gt;                       Medio 11 0.1571429
+  #&gt;                        Alto 10 0.1428571
 ```
 ---
+### Discretizar dados
 
 No R tem um pacote só para manipular fatores: o **forcats** (for categorial variables). 
 
@@ -430,20 +448,25 @@ Primeiro, precisamos informar o R que a variável é fator com níveis, com o co
 
 
 ``` r
+library(forcats)
 
-dados1$ponto_fluidez_categoria &lt;- fct_recode(dados1$ponto_fluidez_categoria,
+dados1$ponto_de_fluidez_categoria &lt;- fct_recode(dados1$ponto_de_fluidez_categoria,
                                             "Baixo" = "Baixo",
-                                            "Médio" = "Médio",
+                                            "Medio" = "Medio",
                                             "Alto" = "Alto")
 fct_count(dados1$ponto_de_fluidez_categoria)
-  #&gt; Error in `fct_count()`:
-  #&gt; ! `f` must be a factor or character vector, not NULL.
+  #&gt; # A tibble: 3 × 2
+  #&gt;   f         n
+  #&gt;   &lt;fct&gt; &lt;int&gt;
+  #&gt; 1 Baixo    49
+  #&gt; 2 Medio    11
+  #&gt; 3 Alto     10
 ```
 ---
 
 class: middle
 
-##Exercício
+### Exercício
 
 O TAN (Número de Acidez Total) é uma medida da acidez de um petróleo ou produto petroquímico, a interpretação dos níveis de acidez pode variar dependendo do tipo de petróleo. Discretize essa variável com base no seguinte critério:
 - Baixo TAN: 0 - 0.5 mg KOH/g
@@ -453,27 +476,194 @@ O TAN (Número de Acidez Total) é uma medida da acidez de um petróleo ou produ
 ---
 class: middle
 
-### Transformação de variáveis quantitativas
+### Diferença de datas
+Vamos calcular o tempo de duração da coleta da amostra (data inicio menos a data final). Para realizar operações com data, usaremos o pacote **lubridate**. 
 
-É possível criar novas variáveis quantitativas a partir de outras variáveis. A criação de novas variáveis pode ajudar a capturar relações complexas entre os dados e fornecer insights adicionais. 
-Uma nova variável que pode ser criada é a razão entre saturados e aromáticos, que pode fornecer informações sobre a composição do petróleo.
-
+A data está salva no formato ano-mês-dia e por isso usamos a função ymd(.) para as variáveis de data. Para calcular a diferença entre as data, usamos a função `\(%--%\)`, atribuindo ao objeto intervalo.
 
 ``` r
-dados1 &lt;- mutate(dados1, indice_saturados_aromaticos = dados$saturados / dados$aromaticos)
-  #&gt; Error in `mutate()`:
-  #&gt; ℹ In argument: `indice_saturados_aromaticos =
-  #&gt;   dados$saturados/dados$aromaticos`.
-  #&gt; Caused by error:
-  #&gt; ! `indice_saturados_aromaticos` must be size 70 or 1, not 72.
+library(lubridate)
+intervalo &lt;- ymd(dados1$data_inicio) %--%  ymd(dados1$data_fim)
+
+dados1$tempo_coleta &lt;- intervalo / ddays(1)  #número de dias
+
+dados1$tempo_coleta
+  #&gt;  [1]    7    3  122  366   93    3    1 1096  213  366    1   32  366    1    1
+  #&gt; [16]  397    2    1   32  366    1   18    1  123   31  154    1    1   32    1
+  #&gt; [31]    1    1    1   83    1    1  215 1568 1246   62   62   62   62    1    1
+  #&gt; [46]  366  366  366  366  366 1096 1096 1096 1096 1096 1096 1096 1096  366  366
+  #&gt; [61]  366  128  154  154 1097 1097 1097 1362 1362 1362
 ```
+&lt;!-- Vale ressaltar que há várias funções importantes para lidar com variáveis de data no pacote lubridate. Para mais detalhes, ver o [vignette](https://cran.r-project.org/web/packages/lubridate/vignettes/lubridate.html). --&gt;
 
 ---
 
+class: middle
+
+### Filtrando banco de dados
+
+Uma etapa muitas vezes necessárias no tratamento de dados é filtrar os dados com base em alguma condição.
 
 
+``` r
+library(dplyr)
+dados_jubarte &lt;- dados1 %&gt;% filter(campo == "jubarte") # do pacote dplyr
+
+dados_jubarte
+  #&gt; # A tibble: 12 × 15
+  #&gt;    amostra campo  ponto_de_fluidez saturados aromaticos resinas asfaltenos  kuop
+  #&gt;      &lt;dbl&gt; &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;
+  #&gt;  1       5 jubar…              -27      53         28.5    18.5       0.5   11.6
+  #&gt;  2      14 jubar…              -30      44.2       34      21.3       0.53  11.6
+  #&gt;  3      16 jubar…              -33      48.2       35.2    16         0.6   11.7
+  #&gt;  4      28 jubar…               12      35.7       24.6    32.4       7.3   11.6
+  #&gt;  5      36 jubar…              -19      44.8       31.3    21.6       2.3   11.6
+  #&gt;  6      37 jubar…              -19      44.8       31.3    21.6       2.3   11.6
+  #&gt;  7      50 jubar…              -24      43         34.3    19.2       3.54  11.6
+  #&gt;  8      55 jubar…               12      28         28.8    39.9       3.28  11.7
+  #&gt;  9      56 jubar…              -27      53         28.5    18.5       0.5   11.6
+  #&gt; 10      57 jubar…                5      42.5       33.1    22.3       2.12  11.6
+  #&gt; 11      58 jubar…              -27      48.7       30.4    20.2       0.71  11.6
+  #&gt; 12      65 jubar…              -24      43.6       33.5    21.0       1.94  11.6
+  #&gt; # ℹ 7 more variables: enxofre_total &lt;dbl&gt;, tan &lt;dbl&gt;, data_inicio &lt;date&gt;,
+  #&gt; #   data_fim &lt;date&gt;, indice_saturados_aromaticos &lt;dbl&gt;,
+  #&gt; #   ponto_de_fluidez_categoria &lt;fct&gt;, tempo_coleta &lt;dbl&gt;
+```
+
+---
+class: middle
+
+### Exercício: 
+
+Filtre do banco de dados apenas as linhas que tiver ponto de fluidez baixo e forem do campo Baleia Azul.
+
+--
+Dica: Considere o "&amp;" como operador lógico.
+
+---
+class: middle
+
+### Combinação de bases de dados
+
+Agora vamos considerar uma segunda base de dados. Essa base de dados contém novas variáveis para as mesmas `\(n=70\)` amostras, identificáveis pela variável chave "amostra".
 
 
+``` r
+dados2 &lt;- read_excel(path = "database/petro1.xls",na="NA")
+
+str(dados2)
+  #&gt; tibble [72 × 3] (S3: tbl_df/tbl/data.frame)
+  #&gt;  $ Amostra               : num [1:72] 1 2 3 4 5 6 7 8 9 10 ...
+  #&gt;  $ Densidade API         : num [1:72] 42.2 20 26.7 27.4 18.2 29.3 29.6 22.1 25.6 24.9 ...
+  #&gt;  $ Viscosidade Cinemática: num [1:72] 3.76 62.01 14.77 11.83 139 ...
+```
+
+---
+class: middle
+
+## Exercício: 
+Realize o tratamento da base de dados "dados2". 
+
+---
+class: middle
+
+### Combinação de bases de dados
+
+Para essa tarefa, há o pacote **dplyr** com diferentes tipos de junções (joins), cada uma com uma lógica própria de combinação.
+
+### Tipos de junções
+
+* inner_join () - retorna valores de ambas as tabelas somente onde há uma correspondência.
+
+* left_join () - retorna todos os valores da primeira tabela mencionada, mais os da segunda tabela correspondente.
+
+* semi_join () - filtra a primeira tabela mencionada para incluir apenas os valores que possuem correspondências na segunda tabela.
+
+* anti_join () - filtra a primeira tabela mencionada para incluir apenas valores que não possuem correspondências na segunda tabela.
+
+---
+class: middle
+
+### Tipos de junções: Inner Join
+
+É o tipo mais simples de join, que combina pares de observações sempre que suas chaves são iguais.
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="img/inner_join.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="80%" /&gt;
+&lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+### Tipos de junções: Anti Join
+
+Returna todas as linhas de x para as quais não existem valores correspondente em y, mantendo apenas as colunas de x. 
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="img/semi_join.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="80%" /&gt;
+&lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+---
+class: middle
+
+### Tipos de junções: Full Join
+
+Returna todas as linhas e todas as colunas tanto de x quanto de y. Returna NA no caso de não haver valor correspondente.
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="img/full_join.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="80%" /&gt;
+&lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+### Tipos de junções: Left Join
+
+Returna todas as linhas de x, e todas as colunas tanto de x quanto de y. Se houver múltiplas correspondências entre x e y, todas as combinações de correspondências serão retornadas.
+
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="img/left_join.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="100%" /&gt;
+&lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+---
+class: middle
+
+### Tipos de junções: Right Join
+
+Returna todas as linhas de y, e todas as colunas tanto de x quanto de y. Se houver múltiplas correspondências entre x e y, todas as combinações de correspondências serão retornadas.
+
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="img/right_join.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="80%" /&gt;
+&lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+---
+class: middle
+
+### Exercício 
+
+Observando a natureza dos dados, discutam, qual o melhor tipo de junção? E porquê? 
+Faça a junção no R.
+
+---
+class: middle
+
+## Recapitulando
+
+Neste curso, exploramos diversas funcionalidades do R, abordando conceitos básicos e comandos essenciais. Em seguida, avançamos para a importação de dados.
+No tratamento de dados, enfatizamos a importância de limpar e organizar as bases de dados. Também abordamos a criação de novas variáveis e a discretização de variáveis quantitativas, o que é essencial para análises mais detalhadas. Na parte de junção de bases de dados, discutimos os diferentes tipos de junções 
+
+## E agora? Infinitas possibilidades...
+
+O conhecimento adquirido em R abre um leque de infinitas possibilidade. Com as habilidades desenvolvidas neste curso, você agora pode explorar e interpretar dados químicos de forma mais eficiente e detalhada.
+
+---
+
+class: middle, center
+
+## Obrigada!
+
+![título](https://media.giphy.com/media/l3q2u6MXJJEKiTZIY/giphy.gif)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
