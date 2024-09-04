@@ -492,7 +492,6 @@ No tratamento de dados, enfatizamos a importância de limpar e organizar as base
 O conhecimento adquirido em R abre um leque de infinitas possibilidade. Com as habilidades desenvolvidas neste curso, você agora pode explorar e interpretar dados químicos de forma mais eficiente e detalhada.
 
 ---
-<!-- R-Ladies -->
 
 class:  center
 
@@ -513,7 +512,7 @@ knitr::include_graphics("img/hexlogorladies.jpeg")
 * Garantindo espaço amigável e seguro. 
 
 ---
-class:  center
+class:center
 
 ```{r, out.width="40%", fig.cap="<center><b> </center></b>"}
 knitr::include_graphics("img/rladies_vix.png")

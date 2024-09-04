@@ -4,7 +4,7 @@
     <title>R básico para Químicos  </title>
     <meta charset="utf-8" />
     <meta name="author" content="     R-Ladies Vitória" />
-    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.27/header-attrs.js"></script>
     <link rel="stylesheet" href="css/kunoichi.css" type="text/css" />
     <link rel="stylesheet" href="css/ninjutsu.css" type="text/css" />
     <link rel="stylesheet" href="css/rladies-fonts.css" type="text/css" />
@@ -58,8 +58,6 @@ layout: true
 
 - Tratamento de dados
 
-- Medidas descritivas
-
 - Exercicios
 
 ---
@@ -72,7 +70,7 @@ class: middle
 Opção com o pacote **readr**.
 
 
-```r
+``` r
 library(readr) #pacote readr
 dados_csv &lt;- read_csv(file = "dados1.csv")
 dados_txt &lt;- read_delim(file = "caminho-para-o-arquivo/dados1.txt", delim = " ")
@@ -84,7 +82,7 @@ Outra opção:
 &lt;!-- para leitura de arquivo .txt é usar a função read.table que já está salva na base, ou seja, não é necessário instalar pacote.  --&gt;
 
 
-```r
+``` r
 dados_txt2 &lt;- read.table(file="dados1.txt",header=T)
 ```
 
@@ -93,7 +91,7 @@ dados_txt2 &lt;- read.table(file="dados1.txt",header=T)
 Vale ressaltar que para cada função read_, existe uma respectiva função write_ para salvar o arquivo no formato de interesse. Como exemplo, queremos salvar a base de dados cars. 
 
 
-```r
+``` r
 write_csv(x = mtcars, path = "cars.csv")
 write_delim(x = mtcars, delim = " ", path = "cars.txt"))
 ```
@@ -106,7 +104,7 @@ class: middle
 O pacote **readxl** pode ser utilizado para leiturade arquivos do Excel, como .xls e xlsx.
 
 
-```r
+``` r
 library(readxl)
 dados_excel &lt;- read_xls(path = "dados1.xls") #Leitura do arquivo .xls
 dados_excelx &lt;- read_xlsx(path = "dados1.xlsx") #Leitura do arquivo .xlsx
@@ -114,7 +112,7 @@ dados_excelx &lt;- read_xlsx(path = "dados1.xlsx") #Leitura do arquivo .xlsx
 
 Uma maneira mais simples é a utilização da função read_excel(), pois ela auto detecta a extensão do arquivo.
 
-```r
+``` r
 library(readxl)
 dados_excel1 &lt;- read_excel(path = "dados1.xls")
 dados_excelx1 &lt;- read_excel(path = "dados1.xlsx")
@@ -127,7 +125,7 @@ dados_excelx1 &lt;- read_excel(path = "dados1.xlsx")
 &lt;!-- Para ler dados salvos em extensão de outros softwares: SPSS, STATA e SAS: pacote haven.  --&gt;
 
 
-```r
+``` r
 library(haven)
 dados_stata &lt;- read_stata("dados1.dta")
 dados_spss &lt;- read_spss("dados1.sav")
@@ -149,11 +147,11 @@ A análise de consistência consiste em realizar uma primeira análise dos dados
 * identificar casos missings e avaliar se a observação está ausente de maneira correta ou não;
 * identificar as categorias de variáveis qualitativas.
 
-Consideramos como exemplo os dados fictícios de `\(n=30\)` gestações gemelares. Vamos considerar duas bases de dados. Na primeira, chamada de "Base_CTG_caracterizacao" estão contidas as informações de caracterização das gestantes e gestações. 
+Consideramos como exemplo os dados fictícios de `\(n=70\)` amostras de petróleo de quatro campos produtores diferentes. Nessa base de dados estão contidas as informações de medição de 10 propriedades fisio-químicas de cada amostra. 
 
 Para importar a base de dados: 
 
-```r
+``` r
 library(readxl)
 dados &lt;- read_excel(path = "database/petro.xls",na="NA", sheet = "Refino") # Selecionando a aba
 dados
@@ -183,7 +181,7 @@ class: middle
 Na base em excel, retire os NA's, deixando em branco, e rode o seguinte comando:
 
 
-```r
+``` r
 library(readxl)
 dados &lt;- read_excel(path = "database/petro.xls", na="NA", sheet = "Refino")
 ```
@@ -193,11 +191,11 @@ O default do missing é o espaço em branco. Acesse o help em ?read_excel e veja
 
 ### Nome das variáveis
 
-Utilizaremos as funções tidyverse e janitor para a arrumação da base de dados. 
+Utilizaremos as funções tidyverse e janitor para a organização da base de dados. 
 
 
 
-```r
+``` r
 library(tidyverse)
 library(janitor)
 
@@ -206,6 +204,9 @@ names(dados)
   #&gt;  [5] "Aromáticos"       "Resinas"          "Asfaltenos"       "KUOP"            
   #&gt;  [9] "Enxofre total"    "TAN"              "Data inicio"      "Data Fim"        
   #&gt; [13] "X"
+```
+
+``` r
 dados &lt;- clean_names(dados) # a função clean_names() para primeiro ajuste dos nomes das variaveis
 names(dados)
   #&gt;  [1] "amostra"          "campo"            "ponto_de_fluidez" "saturados"       
@@ -221,13 +222,13 @@ class: middle
  Na base de dados em questão, não há linhas vazias, como pode ser visto na saída abaixo. 
 
 
-```r
+``` r
 dados &lt;- remove_empty(dados,"rows")
 ```
 
-Propositalmente, inclui a coluna "oi" vazia para podermos eliminá-la com o comando abaixo: 
+Propositalmente, incluimos a coluna "oi" vazia para podermos eliminá-la com o comando abaixo: 
 
-```r
+``` r
 dados &lt;- remove_empty(dados,"cols")
 names(dados)
   #&gt;  [1] "amostra"          "campo"            "ponto_de_fluidez" "saturados"       
@@ -243,7 +244,7 @@ class: middle
 &lt;!-- Uma boa prática consiste em identificar casos duplicados, isto é, identificar se há casos erroneamente repetidos. No exemplo, a variável chave é id, em que cada indivíduo distinto apresenta um id distinto.  Para identificar casos duplicados pela variável chave "id", usamos a função get_dupes do pacote janitor.  --&gt;
 
 
-```r
+``` r
 get_dupes(dados, amostra)
   #&gt; # A tibble: 4 × 13
   #&gt;   amostra dupe_count campo    ponto_de_fluidez saturados aromaticos resinas
@@ -262,7 +263,7 @@ get_dupes(dados, amostra)
 class: middle
 
 
-```r
+``` r
 library(dplyr)
 dados1 &lt;-  distinct(dados,amostra, .keep_all = TRUE)
 dados1
@@ -292,7 +293,7 @@ class: middle
 Para identificar a classe de todas as variáveis que o R está interpretando, usamos a função str(.).  
 
 
-```r
+``` r
 # Ver a estrutura dos dados
 str(dados1)
   #&gt; tibble [70 × 12] (S3: tbl_df/tbl/data.frame)
@@ -314,7 +315,7 @@ str(dados1)
 class: middle
 
 
-```r
+``` r
 dados1$data_inicio  &lt;- as.Date(dados1$data_inicio)
 
 dados1$data_fim &lt;- as.Date(dados1$data_fim)
@@ -363,7 +364,7 @@ class:  middle
 Para variáveis qualitativas: tabela de frequências da variável campo. 
 
 
-```r
+``` r
 #do pacote janitor
 tabyl(dados1,campo) 
   #&gt;        campo  n   percent
@@ -376,7 +377,7 @@ tabyl(dados1,campo)
 Para lidar com variáveis de texto, vamos utilizar a função str_to_lower do pacote stringr.
 
 
-```r
+``` r
 
 library(stringr)
 dados1$campo &lt;- str_to_lower(dados1$campo)
@@ -397,7 +398,7 @@ class: middle
 Uma nova variável que pode ser criada é a razão entre saturados e aromáticos, que pode fornecer informações sobre a composição do petróleo.
 
 
-```r
+``` r
 dados1 &lt;- mutate(dados1, indice_saturados_aromaticos = dados1$saturados / dados1$aromaticos)
 
 summary(dados1$indice_saturados_aromaticos)
@@ -421,7 +422,7 @@ Dependendo da natureza dos dados e das análises que vão ser realizadas, é nec
 Nesse casos, iremos discretizar o ponto de fluidez
 
 
-```r
+``` r
 
 dados1$ponto_de_fluidez_categoria &lt;- cut(
   dados1$ponto_de_fluidez,
@@ -439,12 +440,12 @@ tabyl(dados1, ponto_de_fluidez_categoria)
 ---
 ### Discretizar dados
 
-No R tem um pacote só para manipular fatores: o **forcats** (for categorial variables). 
+No R, há um pacote só para manipular fatores: o **forcats** (for categorial variables). 
 
-Primeiro, precisamos informar o R que a variável é fator com níveis, com o comando as.factor(.).
+Primeiro, precisamos informar ao R que a variável é fator com níveis, com o comando as.factor().
 
 
-```r
+``` r
 library(forcats)
 
 dados1$ponto_de_fluidez_categoria &lt;- fct_recode(dados1$ponto_de_fluidez_categoria,
@@ -476,9 +477,9 @@ class: middle
 ### Diferença de datas
 Vamos calcular o tempo de duração da coleta da amostra (data inicio menos a data final). Para realizar operações com data, usaremos o pacote **lubridate**. 
 
-A data está salva no formato ano-mês-dia e por isso usamos a função ymd(.) para as variáveis de data. Para calcular a diferença entre as data, usamos a função `\(%--%\)`, atribuindo ao objeto intervalo.
+A data está salva no formato ano-mês-dia e por isso usamos a função ymd(.) para as variáveis de data. Para calcular a diferença entre as data, usamos a função `\(\%--\%\)`, atribuindo ao objeto intervalo.
 
-```r
+``` r
 library(lubridate)
 intervalo &lt;- ymd(dados1$data_inicio) %--%  ymd(dados1$data_fim)
 
@@ -499,10 +500,10 @@ class: middle
 
 ### Filtrando banco de dados
 
-Uma etapa muitas vezes necessárias no tratamento de dados é filtrar os dados com base em alguma condição.
+Uma etapa muitas vezes necessária no tratamento de dados é filtrar os dados com base em alguma condição.
 
 
-```r
+``` r
 library(dplyr)
 dados_jubarte &lt;- dados1 %&gt;% filter(campo == "jubarte") # do pacote dplyr
 
@@ -532,7 +533,7 @@ class: middle
 
 ### Exercício: 
 
-Filtre do banco de dados apenas as linhas que tiver ponto de fluidez baixo e forem do campo Baleia Azul.
+Filtre do banco de dados apenas as linhas que tiverem ponto de fluidez baixo e forem do campo Baleia Azul.
 
 
 **Dica:** Considere o "&amp;" como operador lógico.
@@ -545,7 +546,7 @@ class: middle
 Agora vamos considerar uma segunda base de dados. Essa base de dados contém novas variáveis para as mesmas `\(n=70\)` amostras, identificáveis pela variável chave "amostra".
 
 
-```r
+``` r
 dados2 &lt;- read_excel(path = "database/petro1.xls",na="NA")
 
 str(dados2)
@@ -572,11 +573,14 @@ Para essa tarefa, há o pacote **dplyr** com diferentes tipos de junções (join
 
 * inner_join () - retorna valores de ambas as tabelas somente onde há uma correspondência.
 
-* left_join () - retorna todos os valores da primeira tabela mencionada, mais os da segunda tabela correspondente.
-
-* semi_join () - filtra a primeira tabela mencionada para incluir apenas os valores que possuem correspondências na segunda tabela.
+* full_join () - retorna todos os valores de ambas as tabelas.
 
 * anti_join () - filtra a primeira tabela mencionada para incluir apenas valores que não possuem correspondências na segunda tabela.
+
+* left_join () - retorna todos os valores da primeira tabela mencionada, mais os da segunda tabela correspondente.
+
+* right_join () - retorna todos os valores da segundaa tabela mencionada, mais os da peimeira tabela correspondente.
+
 
 ---
 class: middle
@@ -586,16 +590,16 @@ class: middle
 É o tipo mais simples de join, que combina pares de observações sempre que suas chaves são iguais.
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="img/inner_join.png" alt="&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;" width="80%" /&gt;
+&lt;img src="img/inner_join.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="80%" /&gt;
 &lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
 &lt;/div&gt;
 
 ### Tipos de junções: Anti Join
 
-Returna todas as linhas de x para as quais não existem valores correspondente em y, mantendo apenas as colunas de x. 
+Retorna todas as linhas de x para as quais não existem valores correspondente em y, mantendo apenas as colunas de x. 
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="img/semi_join.png" alt="&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;" width="80%" /&gt;
+&lt;img src="img/anti_join.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="80%" /&gt;
 &lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
 &lt;/div&gt;
 
@@ -604,20 +608,20 @@ class: middle
 
 ### Tipos de junções: Full Join
 
-Returna todas as linhas e todas as colunas tanto de x quanto de y. Returna NA no caso de não haver valor correspondente.
+Retorna todas as linhas e todas as colunas tanto de x quanto de y. Retorna NA no caso de não haver valor correspondente.
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="img/full_join.png" alt="&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;" width="80%" /&gt;
+&lt;img src="img/full_join.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="80%" /&gt;
 &lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
 &lt;/div&gt;
 
 ### Tipos de junções: Left Join
 
-Returna todas as linhas de x, e todas as colunas tanto de x quanto de y. Se houver múltiplas correspondências entre x e y, todas as combinações de correspondências serão retornadas.
+Retorna todas as linhas de x, e todas as colunas tanto de x quanto de y. Se houver múltiplas correspondências entre x e y, todas as combinações de correspondências serão retornadas.
 
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="img/left_join.png" alt="&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;" width="100%" /&gt;
+&lt;img src="img/left_join.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="100%" /&gt;
 &lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
 &lt;/div&gt;
 
@@ -626,11 +630,11 @@ class: middle
 
 ### Tipos de junções: Right Join
 
-Returna todas as linhas de y, e todas as colunas tanto de x quanto de y. Se houver múltiplas correspondências entre x e y, todas as combinações de correspondências serão retornadas.
+Retorna todas as linhas de y, e todas as colunas tanto de x quanto de y. Se houver múltiplas correspondências entre x e y, todas as combinações de correspondências serão retornadas.
 
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="img/right_join.png" alt="&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;" width="80%" /&gt;
+&lt;img src="img/right_join.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="80%" /&gt;
 &lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
 &lt;/div&gt;
 
@@ -655,6 +659,51 @@ No tratamento de dados, enfatizamos a importância de limpar e organizar as base
 O conhecimento adquirido em R abre um leque de infinitas possibilidade. Com as habilidades desenvolvidas neste curso, você agora pode explorar e interpretar dados químicos de forma mais eficiente e detalhada.
 
 ---
+
+class:  center
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="img/hexlogorladies.jpeg" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="18%" /&gt;
+&lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+
+- R-Ladies é uma organização mundial que **promove a diversidade de gênero** na comunidade R.
+
+- Capacitar pessoas de gêneros sub-representados, criando e fortalecendo redes colaborativas dentro da comunidade R para que elas alcancem todas e quaisquer funções e áreas de participação no mundo da tecnologia.
+
+
+**Como**
+
+* Promovendo meetups (encontros) e mentorias. 
+
+* Garantindo espaço amigável e seguro. 
+
+---
+class:center
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="img/rladies_vix.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="40%" /&gt;
+&lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+O Capítulo da cidade de Vitória foi criado em 29 de setembro de 2019. Em 2020 entrou em hiatus das atividades devido a pandemia, mas neste ano retorna para suas atividades.
+
+
+
+- [Código de conduta - R-Ladies](https://github.com/rladies/starter-kit/wiki/Code-of-Conduct#portuguese)
+
+
+- Saiba mais:
+  - RLadies Global: [https://rladies.org/](https://rladies.org/)
+  - MeetUp: [https://www.meetup.com/pt-BR/R-Ladies-Vitoria](https://www.meetup.com/pt-BR/R-Ladies-Vitoria)
+  - Twitter: [@RLadiesGlobal](https://twitter.com/rladiesglobal), [@rladiesvix](https://twitter.com/rladiesvix)
+  - Instagram: [@RLadiesVix](http://instagram.com/rladiesvix)
+  - Github: [https://github.com/rladies/meetup-presentations_vitoria](https://github.com/rladies/meetup-presentations_vitoria)
+
+&lt;!-- Back-end e front-end --&gt;
+---
+
 
 class: middle, center
 
