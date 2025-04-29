@@ -4,7 +4,7 @@ Curso introdutório de R para Químicos ministrado pelo R-Ladies Vitória.
 
 # Material do Curso
 
-Este repositório contém os slides usados no curso. O material foi desenvolvido por Agatha Rodrigues, Beatriz Lima, Iane Martins, Nathalia Hadam.
+Este repositório contém os slides usados no curso. O material foi desenvolvido por Agatha Rodrigues, Ornella Sacrdua, Beatriz Lima, Iane Martins e Mariana Costa.
 
 ## Programação
 
@@ -22,6 +22,6 @@ Este repositório contém os slides usados no curso. O material foi desenvolvido
 
 ## Slides disponíveis
 
-- [Slide 1](https://beatriz-ls.github.io/minicurso_r_para_quimicos_rladies/slide1.html)
-- [Slide 2](https://beatriz-ls.github.io/minicurso_r_para_quimicos_rladies/slide2.html)
+- [Slide 1](https://r-ladies-vitoria.github.io/minicurso_r_para_quimicos_rladies/slide1)
+- [Slide 2](https://r-ladies-vitoria.github.io/minicurso_r_para_quimicos_rladies/slide2)
 
